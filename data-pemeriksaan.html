@@ -125,6 +125,7 @@
             text-align: center;
         }
 
+
         /* Main Content Styles */
         .main-content {
             flex: 1; /* Take remaining space */
@@ -181,7 +182,7 @@
             gap: 8px;
         }
 
-        .filter-group select, .filter-group input {
+        .filter-group select {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -334,20 +335,7 @@
             .toggle-sidebar {
                 display: block;
             }
-
-            .filter-section {
-                flex-direction: column; /* Stack elements vertically */
-                gap: 10px; /* Adjust gap */
             }
-
-            .filter-group {
-                width: 100%; /* Full width for mobile */
-            }
-
-            .filter-btn {
-                width: 100%; /* Full width for mobile */
-            }
-        }
     </style>
 </head>
 <body>
@@ -374,7 +362,6 @@
                 </a>
                 <a href="data-pemeriksaan.html" class="menu-item active">
                     <i>📝</i> Data Pemeriksaan
-                </a>
                 <a href="logout.html" class="menu-item">
                     <i>🚪</i> Logout
                 </a>
@@ -393,10 +380,6 @@
             </div>
 
             <div class="filter-section">
-                <div class="filter-group">
-                    <label for="search-filter">Cari:</label>
-                    <input type="text" id="search-filter" placeholder="Masukkan nama kapal atau perusahaan">
-                </div>
                 <div class="filter-group">
                     <label for="tahun-filter">Tahun:</label>
                     <select id="tahun-filter">
@@ -502,11 +485,11 @@
         ];
 
         // Function to populate table
-        function populateTable(data) {
+        function populateTable() {
             const tbody = document.querySelector('#pemeriksaanTable tbody');
             tbody.innerHTML = '';
             
-            data.forEach((item, index) => {
+            pemeriksaanData.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -547,7 +530,7 @@
                     <div class="detail-row"><strong>Tanggal Terbit:</strong> ${data.tanggalTerbit}</div>
                     <div class="detail-row"><strong>Masa Berlaku:</strong> ${data.masaBerlaku}</div>
                     <div class="detail-row"><strong>Bahan Kapal:</strong> ${data.bahanKapal}</div>
-                    <div class="detail-row"><strong>Pemeriksa:</strong> ${data.pemeriksa}</div>
+                    <div class="detail-row"><strong>Pemeriksa:</strong> ${data.pemeriksaan}</div>
                     <div class="detail-row"><strong>Keterangan:</strong> ${data.keterangan}</div>
                 `;
                 

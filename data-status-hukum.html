@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Status Hukum - SIPERIKSA</title>
+    <link href="logo-shsk.png" rel="icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --navy: #001f3f;
+            --gold: #FFD700;
+            --light-navy: #003366;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --dark-gray: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px; /* Fixed width for sidebar */
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 20px 0;
+            position: fixed; /* Make sidebar fixed */
+            height: 100vh; /* Full height */
+            overflow-y: auto; /* Allow scrolling if content overflows */
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease; /* Smooth transition for sidebar */
+            left: 0; /* Show sidebar by default */
+        }
+
+        .sidebar.hidden {
+            left: -280px; /* Hide sidebar */
+        }
+
+        .sidebar-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .sidebar-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .sidebar-user {
+            text-align: center;
+        }
+
+        .sidebar-user h3 {
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+
+        .sidebar-user p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 3px;
+        }
+
+        .sidebar-menu {
+            padding: 0 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .menu-item:hover {
+            background-color: var(--light-navy);
+        }
+
+        .menu-item.active {
+            background-color: var(--gold);
+            color: var(--navy);
+            font-weight: bold;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .submenu {
+            display: none; /* Hide submenu by default */
+            padding-left: 20px; /* Indent submenu items */
+        }
+
+        .submenu-item {
+            padding: 10px 15px;
+            color: var(--white);
+            text-decoration: none;
+            display: block;
+        }
+
+        .submenu-item:hover {
+            background-color: var(--light-navy);
+        }
+
+        .submenu-item.active {
+            background-color: var(--gold);
+            color: var(--navy);
+            font-weight: bold;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1; /* Take remaining space */
+            padding: 20px; /* Consistent padding */
+            transition: all 0.3s ease;
+            margin-left: 280px; /* Add margin to the left to avoid overlap with sidebar */
+            overflow-y: auto; /* Allow scrolling */
+            height: 100vh; /* Full height */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header-title h1 {
+            color: var(--navy);
+            font-size: 24px; /* Adjusted header font size */
+        }
+
+        .toggle-sidebar {
+            display: none;
+            background-color: var(--navy);
+            color: var(--white);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-sidebar:hover {
+            background-color: var(--light-navy);
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-wrap: wrap; /* Allow wrapping for mobile */
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .filter-btn {
+            background-color: var(--gold);
+            color: var(--navy);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--light-navy);
+            color: white;
+        }
+
+        .data-table-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px; /* Reduced padding */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
+        #pemeriksaanTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        #pemeriksaanTable th, 
+        #pemeriksaanTable td {
+            padding: 10px; /* Reduced padding */
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 12px; /* Reduced table font size */
+        }
+        
+        #pemeriksaanTable th {
+            background-color: var(--navy);
+            color: var(--gold);
+            font-weight: 600;
+        }
+        
+        .view-btn {
+            background-color: var(--gold);
+            color: var(--navy);
+            border: none;
+            padding: 6px 10px; /* Reduced button padding */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 12px; /* Reduced button font size */
+        }
+        
+        .view-btn:hover {
+            background-color: var(--light-navy);
+            color: white;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .container {
+                position: relative;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                height: 100vh;
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 15px; /* Adjusted padding for mobile */
+                margin-left: 0; /* Remove margin for mobile */
+            }
+
+            .toggle-sidebar {
+                display: block;
+            }
+
+            .filter-section {
+                flex-direction: column; /* Stack elements vertically */
+            }
+
+            .filter-btn {
+                width: 100%; /* Full width for buttons */
+                margin-top: 10px; /* Space between buttons */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <img src="logo-shsk.png" alt="SIPERIKSA Logo">
+                </div>
+                <div class="sidebar-user">
+                    <h3 id="userName">Nama Petugas</h3>
+                    <p id="userNIP">NIP: 1234567890123456</p>
+                    <p id="userJabatan">Jabatan: Petugas Pemeriksaan</p>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i>📊</i> Dashboard
+                </a>
+                <div class="menu-item" id="status-hukum-toggle">
+                    <i>⚖️</i> Status Hukum Kapal
+                </div>
+                <div class="submenu" id="status-hukum-submenu" style="display: block;"> <!-- Show submenu by default -->
+                    <a href="arsip-status-hukum.html" class="submenu-item">
+                        <i>📂</i> Arsip Status Hukum Kapal
+                    </a>
+                    <a href="data-status-hukum.html" class="submenu-item active">
+                        <i>📝</i> Data Status Hukum Kapal
+                    </a>
+                </div>
+                <div class="menu-item" id="sertifikasi-toggle">
+                    <i>🚢</i> Sertifikasi Kapal
+                </div>
+                <div class="submenu" id="sertifikasi-submenu">
+                    <a href="arsip-pemeriksaan.html" class="submenu-item">
+                        <i>📂</i> Arsip Pemeriksaan Kapal
+                    </a>
+                    <a href="data-pemeriksaan.html" class="submenu-item">
+                        <i>📝</i> Data Pemeriksaan Kapal
+                    </a>
+                </div>
+                <a href="logout.html" class="menu-item">
+                    <i>🚪</i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <div class="header">
+                <div class="header-title">
+                    <h1>Data Status Hukum Kapal</h1>
+                </div>
+                <button class="toggle-sidebar" id="toggle-sidebar">
+                    ☰ Menu
+                </button>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label for="tahun-filter">Tahun:</label>
+                    <select id="tahun-filter">
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="bulan-filter">Bulan:</label>
+                    <select id="bulan-filter">
+                        <option value="Semua">Semua</option>
+                        <option value="01">Januari</option>
+                        <option value="02">Februari</option>
+                        <option value="03">Maret</option>
+                        <option value="04">April</option>
+                        <option value="05">Mei</option>
+                        <option value="06">Juni</option>
+                        <option value="07">Juli</option>
+                        <option value="08">Agustus</option>
+                        <option value="09">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-type">Tipe Pencarian:</label>
+                    <select id="search-type">
+                        <option value="namaKapal">Nama Kapal</option>
+                        <option value="pemilik">Pemilik</option>
+                        <option value="tandaPendaftaran">Tanda Pendaftaran</option>
+                        <option value="tanggalPengukuhan">Tanggal Pengukuhan</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-input">Pencarian:</label>
+                    <input type="text" id="search-input" placeholder="Ketik untuk mencari...">
+                </div>
+                <button id="apply-filter" class="filter-btn">Terapkan Filter</button>
+                <button id="export-excel" class="filter-btn">Export ke Excel</button>
+            </div>
+
+            <div class="data-table-container">
+                <table id="pemeriksaanTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Kapal</th>
+                            <th>Tonase Kotor (GT)</th>
+                            <th>Tanda Pendaftaran</th>
+                            <th>Pemilik</th>
+                            <th>Tempat Penerbitan STKK</th>
+                            <th>Tanggal Penerbitan STKK</th>
+                            <th>No. Urut Penerbitan STKK</th>
+                            <th>No. Hal Penerbitan STKK</th>
+                            <th>No. Buku Penerbitan STKK</th>
+                            <th>Pengukuhan STKK</th>
+                            <th>Tanggal Pengukuhan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="footer-text">© 2025 SIPERIKSA - Seksi SHSK KSOP Pekanbaru</p>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve user information from sessionStorage
+        document.addEventListener('DOMContentLoaded', function() {
+    const userName = sessionStorage.getItem('nama') || 'Nama Petugas';
+    const userNIP = sessionStorage.getItem('nip') || '1234567890123456';
+    const userJabatan = sessionStorage.getItem('jabatan') || 'Petugas Pemeriksaan';
+
+    document.getElementById('userName').textContent = userName;
+    document.getElementById('userNIP').textContent = userNIP;
+    document.getElementById('userJabatan').textContent = userJabatan;
+});;
+        
+        // Toggle sidebar on mobile
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        const mainContent = document.getElementById('main-content');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        mainContent.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && sidebar.classList.contains('active') && e.target !== toggleBtn) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Toggle sertifikasi submenu
+        const sertifikasiToggle = document.getElementById('sertifikasi-toggle');
+        const sertifikasiSubmenu = document.getElementById('sertifikasi-submenu');
+
+        sertifikasiToggle.addEventListener('click', () => {
+            sertifikasiSubmenu.style.display = sertifikasiSubmenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Toggle status hukum submenu
+        const statusHukumToggle = document.getElementById('status-hukum-toggle');
+        const statusHukumSubmenu = document.getElementById('status-hukum-submenu');
+
+        statusHukumToggle.addEventListener('click', () => {
+            statusHukumSubmenu.style.display = statusHukumSubmenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+    // Sample data for demonstration
+    let statushukumData = [
+        {
+            id: 1,
+            namaKapal: "MV. Sejahtera",
+            tonaseKotor: "500 GT",
+            tandaPendaftaran: "12345",
+            pemilik: "PT Pelayaran Nasional",
+            penerbitanSTKK: {
+                tempat: "JAKARTA",
+                tanggal: "2023-12-01",
+                noUrut: "001",
+                noHal: "002",
+                noBuku: "003"
+            },
+            pengukuhan: {
+                stkk: "123456",
+                tanggal: "2023-12-01"
+            }
+        },
+        {
+            id: 2,
+            namaKapal: "MV. Bahari",
+            tonaseKotor: "800 GT",
+            tandaPendaftaran: "67890",
+            pemilik: "PT Samudera Indah",
+            penerbitanSTKK: {
+                tempat: "PEL. B",
+                tanggal: "2023-11-15",
+                noUrut: "004",
+                noHal: "005",
+                noBuku: "006"
+            },
+            pengukuhan: {
+                stkk: "654321",
+                tanggal: "2023-11-15"
+            }
+        }
+    ];
+
+    // Function to populate the table
+    function populateTable(data) {
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = ''; // Clear existing data
+
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.namaKapal}</td>
+                <td>${item.tonaseKotor}</td>
+                <td>${item.tandaPendaftaran}</td>
+                <td>${item.pemilik}</td>
+                <td>${item.penerbitanSTKK.tempat}</td>
+                <td>${item.penerbitanSTKK.tanggal}</td>
+                <td>${item.penerbitanSTKK.noUrut}</td>
+                <td>${item.penerbitanSTKK.noHal}</td>
+                <td>${item.penerbitanSTKK.noBuku}</td>
+                <td>${item.pengukuhan.stkk}</td>
+                <td>${item.pengukuhan.tanggal}</td>
+                <td>
+                    <button class="view-btn" data-id="${item.id}">Lihat</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        // Add click handlers for view buttons
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                showDetail(id);
+            });
+        });
+    }
+    
+    // Function to show detail modal with complete data
+    function showDetail(id) {
+        const data = statushukumData.find(item => item.id == id);
+        if (data) {
+            alert(`Detail Kapal:\nNama Kapal: ${data.namaKapal}\nPemilik: ${data.pemilik}\nSTKK: ${data.pengukuhan.stkk}`);
+            // Implement file viewing logic here
+        }
+    }
+
+    // Function to filter the table
+    function filterTable() {
+        const tahun = document.getElementById('tahun-filter').value;
+        const bulan = document.getElementById('bulan-filter').value;
+        const searchType = document.getElementById('search-type').value;
+        const searchInput = document.getElementById('search-input').value.toLowerCase();
+
+        const filteredData = statushukumData.filter(item => {
+            const matchesYear = tahun === "2023" ? item.penerbitanSTKK.tanggal.startsWith("2023") : true;
+            const matchesMonth = bulan === "Semua" ? true : item.penerbitanSTKK.tanggal.startsWith(`2023-${bulan}`);
+            const matchesSearch = item[searchType].toLowerCase().includes(searchInput);
+            return matchesYear && matchesMonth && matchesSearch;
+        });
+
+        // Populate the table with filtered data
+        populateTable(filteredData);
+    }
+
+    // Function to export table to Excel
+    function exportToExcel() {
+        const ws = XLSX.utils.table_to_sheet(document.getElementById('pemeriksaanTable'));
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Data Status Hukum");
+        XLSX.writeFile(wb, "Data_Status_Hukum.xlsx");
+    }
+
+    // Event listeners
+    document.getElementById('apply-filter').addEventListener('click', filterTable);
+    document.getElementById('export-excel').addEventListener('click', exportToExcel);
+    document.getElementById('search-input').addEventListener('input', filterTable);
+
+    // Initial population of the table
+    populateTable(statushukumData);
+
+        // Close modal when clicking X
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

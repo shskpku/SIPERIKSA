@@ -125,7 +125,6 @@
             text-align: center;
         }
 
-
         /* Main Content Styles */
         .main-content {
             flex: 1; /* Take remaining space */
@@ -174,6 +173,7 @@
             background-color: var(--white);
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-wrap: wrap; /* Allow wrapping for mobile */
         }
 
         .filter-group {
@@ -182,7 +182,8 @@
             gap: 8px;
         }
 
-        .filter-group select {
+        .filter-group select,
+        .filter-group input {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -335,7 +336,16 @@
             .toggle-sidebar {
                 display: block;
             }
+
+            .filter-section {
+                flex-direction: column; /* Stack elements vertically */
             }
+
+            .filter-btn {
+                width: 100%; /* Full width for buttons */
+                margin-top: 10px; /* Space between buttons */
+            }
+        }
     </style>
 </head>
 <body>
@@ -362,6 +372,7 @@
                 </a>
                 <a href="data-pemeriksaan.html" class="menu-item active">
                     <i>📝</i> Data Pemeriksaan
+                </a>
                 <a href="logout.html" class="menu-item">
                     <i>🚪</i> Logout
                 </a>
@@ -405,6 +416,26 @@
                         <option value="12">Desember</option>
                     </select>
                 </div>
+                <div class="filter-group">
+                    <label for="search-type">Tipe Pencarian:</label>
+                    <select id="search-type">
+                        <option value="namaKapal">Nama Kapal</option>
+                        <option value="perusahaan">Perusahaan</option>
+                        <option value="ukuran">Ukuran Kapal</option>
+                        <option value="callSign">Call Sign</option>
+                        <option value="jenisSertifikat">Jenis Sertifikat</option>
+                        <option value="noSertifikat">No. Sertifikat</option>
+                        <option value="tanggalTerbit">Tanggal Terbit</option>
+                        <option value="masaBerlaku">Masa Berlaku</option>
+                        <option value="bahanKapal">Bahan Kapal</option>
+                        <option value="pemeriksa">Pemeriksa</option>
+                        <option value="keterangan">Keterangan</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-input">Pencarian:</label>
+                    <input type="text" id="search-input" placeholder="Ketik untuk mencari...">
+                </div>
                 <button id="apply-filter" class="filter-btn">Terapkan Filter</button>
                 <button id="export-excel" class="filter-btn">Export ke Excel</button>
             </div>
@@ -437,7 +468,7 @@
             <p class="footer-text">© 2025 SIPERIKSA - Seksi SHSK KSOP Pekanbaru</p>
         </div>
     </div>
-
+    
     <!-- Detail Modal -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
@@ -485,11 +516,11 @@
         ];
 
         // Function to populate table
-        function populateTable() {
+        function populateTable(data) {
             const tbody = document.querySelector('#pemeriksaanTable tbody');
             tbody.innerHTML = '';
             
-            pemeriksaanData.forEach((item, index) => {
+            data.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -566,20 +597,17 @@
             }
         }
         
-        // Initialize table on load
-        document.addEventListener('DOMContentLoaded', function() {
-            populateTable();
 
             // Retrieve user information from sessionStorage
-        const userName = sessionStorage.getItem('nama') || 'Nama Petugas';
-        const userNIP = sessionStorage.getItem('nip') || 'NIP: 1234567890123456';
-        const userJabatan = sessionStorage.getItem('jabatan') || 'Jabatan: Petugas Pemeriksaan';
+        document.addEventListener('DOMContentLoaded', function() {
+    const userName = sessionStorage.getItem('nama') || 'Nama Petugas';
+    const userNIP = sessionStorage.getItem('nip') || '1234567890123456';
+    const userJabatan = sessionStorage.getItem('jabatan') || 'Petugas Pemeriksaan';
 
-        // Set user information in the sidebar
-        document.getElementById('userName').textContent = userName;
-        document.getElementById('userNIP').textContent = userNIP;
-        document.getElementById('userJabatan').textContent = userJabatan;
-        });
+    document.getElementById('userName').textContent = userName;
+    document.getElementById('userNIP').textContent = userNIP;
+    document.getElementById('userJabatan').textContent = userJabatan;
+});;
         
         // Toggle sidebar on mobile
         const sidebar = document.getElementById('sidebar');

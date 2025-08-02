@@ -327,14 +327,13 @@
                     loginBtn.disabled = true;
 
                     const formData = new FormData();
-formData.append('nip', nip.value.trim());
-formData.append('password', password.value.trim());
+                    formData.append('nip', nip.value.trim());
+                    formData.append('password', password.value.trim());
 
-fetch('https://script.google.com/macros/s/AKfycbyGfs8dg5nJs1EhuCzcXhKbTbNEnjqb32AqIUjuZg2ghohtvLsYDm04fOSWXaJHpNiJ6w/exec', {
-    method: 'POST',
-    body: formData,
-})
-
+                    fetch('https://script.google.com/macros/s/AKfycbyGfs8dg5nJs1EhuCzcXhKbTbNEnjqb32AqIUjuZg2ghohtvLsYDm04fOSWXaJHpNiJ6w/exec', {
+                        method: 'POST',
+                        body: formData,
+                    })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {

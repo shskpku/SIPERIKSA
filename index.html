@@ -255,8 +255,8 @@
     </div>
 
     <!-- Popup Notification -->
-    <div class="popup" id="popup">
-        <h4 id="popupTitle"></h4>
+    <div class="popup fixed top-20 right-5 bg-white border rounded-lg shadow-lg p-4 hidden" id="popup">
+        <h4 class="font-bold" id="popupTitle"></h4>
         <p id="popupMessage"></p>
     </div>
 
@@ -344,8 +344,8 @@
 
                             popupTitle.textContent = 'Login Berhasil!';
                             popupMessage.textContent = `Selamat datang, ${data.nama}.`;
-                            popup.classList.add('success');
-                            popup.style.display = 'block';
+                            popup.classList.remove('hidden');
+                            popup.classList.add('bg-green-100', 'border-green-500');
 
                             // Redirect to dashboard after 3 seconds
                             setTimeout(() => {
@@ -354,20 +354,25 @@
                         } else {
                             popupTitle.textContent = 'Login Gagal!';
                             popupMessage.textContent = data.message;
-                            popup.classList.add('error');
-                            popup.style.display = 'block';
+                            popup.classList.remove('hidden');
+                            popup.classList.add('bg-red-100', 'border-red-500');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         popupTitle.textContent = 'Login Gagal!';
                         popupMessage.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
-                        popup.classList.add('error');
-                        popup.style.display = 'block';
+                        popup.classList.remove('hidden');
+                        popup.classList.add('bg-red-100', 'border-red-500');
                     })
                     .finally(() => {
                         loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
                         loginBtn.disabled = false;
+
+                        // Hide popup after 5 seconds
+                        setTimeout(() => {
+                            popup.classList.add('hidden');
+                        }, 5000);
                     });
                 }
             });

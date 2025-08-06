@@ -161,16 +161,17 @@
 
         /* Popup Styles */
         .popup {
-    display: block;
-    opacity: 0;
-    transform: translateY(-20px);
-    pointer-events: none;
-}
-.popup.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
+            display: none; /* Initially hidden */
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
+        .popup.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
 
         .popup.success {
             border-color: var(--success);
@@ -253,6 +254,7 @@
     <div class="popup" id="popup">
         <h4 class="font-bold" id="popupTitle"></h4>
         <p id="popupMessage"></p>
+        <button class="mt-4 bg-blue-500 text-white rounded px-4 py-2" id="closePopupButton" onclick="closePopup()">Tutup</button>
     </div>
 
     <script>
@@ -331,43 +333,48 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-    if (data.status === 'success') {
-        sessionStorage.setItem('nip', data.nip);
-        sessionStorage.setItem('nama', data.nama);
-        sessionStorage.setItem('jabatan', data.jabatan);
+                        if (data.status === 'success') {
+                            sessionStorage.setItem('nip', data.nip);
+                            sessionStorage.setItem('nama', data.nama);
+                            sessionStorage.setItem('jabatan', data.jabatan);
 
-        popupTitle.textContent = 'Login Berhasil!';
-        popupMessage.textContent = `Selamat datang, ${data.nama}.`;
-        popup.classList.remove('error', 'success', 'show');
-        popup.classList.add('success', 'show');
+                            popupTitle.textContent = 'Login Berhasil!';
+                            popupMessage.textContent = `Selamat datang, ${data.nama}.`;
+                            popup.classList.remove('error', 'success', 'show');
+                            popup.classList.add('success', 'show');
 
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 3000);
-    } else {
-        popupTitle.textContent = 'Login Gagal!';
-        popupMessage.textContent = data.message;
-        popup.classList.remove('error', 'success', 'show');
-        popup.classList.add('error', 'show');
-    }
-})
-.catch(error => {
-    popupTitle.textContent = 'Login Gagal!';
-    popupMessage.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
-    popup.classList.remove('error', 'success', 'show');
-    popup.classList.add('error', 'show');
-})
-.finally(() => {
-    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-    loginBtn.disabled = false;
+                            setTimeout(() => {
+                                window.location.href = 'dashboard.html';
+                            }, 3000);
+                        } else {
+                            popupTitle.textContent = 'Login Gagal!';
+                            popupMessage.textContent = data.message;
+                            popup.classList.remove('error', 'success', 'show');
+                            popup.classList.add('error', 'show');
+                        }
+                    })
+                    .catch(error => {
+                        popupTitle.textContent = 'Login Gagal!';
+                        popupMessage.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
+                        popup.classList.remove('error', 'success', 'show');
+                        popup.classList.add('error', 'show');
+                    })
+                    .finally(() => {
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                        loginBtn.disabled = false;
 
-    setTimeout(() => {
-        popup.classList.remove('show');
-    }, 5000);
-});
+                        setTimeout(() => {
+                            popup.classList.remove('show');
+                        }, 5000);
+                    });
                 }
             });
         });
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.classList.remove('show');
+        }
     </script>
 </body>
 </html>

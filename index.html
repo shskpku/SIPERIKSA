@@ -30,6 +30,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative; /* Added for positioning popup */
         }
 
         .login-container {
@@ -162,15 +163,21 @@
         /* Popup Styles */
         .popup {
             display: none; /* Initially hidden */
+            position: fixed; /* Fixed position */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the popup */
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            z-index: 1000; /* Ensure it is above other content */
             opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
         .popup.show {
             display: block;
             opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
         }
 
         .popup.success {
@@ -340,7 +347,7 @@
 
                             popupTitle.textContent = 'Login Berhasil!';
                             popupMessage.textContent = `Selamat datang, ${data.nama}.`;
-                            popup.classList.remove('error', 'success', 'show');
+                            popup.classList.remove('error', 'success');
                             popup.classList.add('success', 'show');
 
                             setTimeout(() => {
@@ -349,23 +356,19 @@
                         } else {
                             popupTitle.textContent = 'Login Gagal!';
                             popupMessage.textContent = data.message;
-                            popup.classList.remove('error', 'success', 'show');
+                            popup.classList.remove('error', 'success');
                             popup.classList.add('error', 'show');
                         }
                     })
                     .catch(error => {
                         popupTitle.textContent = 'Login Gagal!';
                         popupMessage.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
-                        popup.classList.remove('error', 'success', 'show');
+                        popup.classList.remove('error', 'success');
                         popup.classList.add('error', 'show');
                     })
                     .finally(() => {
                         loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
                         loginBtn.disabled = false;
-
-                        setTimeout(() => {
-                            popup.classList.remove('show');
-                        }, 5000);
                     });
                 }
             });

@@ -347,6 +347,11 @@
     </div>
 
     <script>
+        if (!sessionStorage.getItem('nama') || !sessionStorage.getItem('nip') || !sessionStorage.getItem('jabatan')) {
+            alert('Silakan login terlebih dahulu.');
+            window.location.href = 'login.html';
+        }
+
         // Toggle sidebar on mobile
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggle-sidebar');

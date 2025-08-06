@@ -15,8 +15,6 @@
             --white: #ffffff;
             --error: #e74c3c;
             --success: #2ecc71;
-            --active-bg: #d4af37; /* Background color for active container */
-            --inactive-bg: #f5f5f5; /* Background color for inactive container */
         }
 
         * {
@@ -32,7 +30,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
+            position: relative; /* Added for positioning popup */
         }
 
         .login-container {
@@ -148,24 +146,6 @@
             color: var(--white);
         }
 
-        .register-btn {
-            width: 100%;
-            background-color: var(--light-navy);
-            color: var(--white);
-            border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-
-        .register-btn:hover {
-            background-color: var(--gold);
-        }
-
         .footer-text {
             text-align: center;
             margin-top: 20px;
@@ -180,44 +160,18 @@
             display: none;
         }
 
-        .login-option {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .login-option div {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid var(--navy);
-            border-radius: 6px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .login-option div.active {
-            background-color: var(--active-bg);
-            color: var(--white);
-        }
-
-        .login-option div.inactive {
-            background-color: var(--inactive-bg);
-            color: var(--navy);
-        }
-
         /* Popup Styles */
         .popup {
-            display: none;
-            position: fixed;
+            display: none; /* Initially hidden */
+            position: fixed; /* Fixed position */
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); /* Center the popup */
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            z-index: 1000;
+            z-index: 1000; /* Ensure it is above other content */
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -256,8 +210,8 @@
             }
 
             .popup {
-                width: 90%;
-                right: 5%;
+                width: 90%; /* Responsive width for mobile */
+                right: 5%; /* Adjust position for mobile */
             }
         }
     </style>
@@ -271,14 +225,9 @@
             <h1>SIPERIKSA</h1>
             <p>Sistem Arsip Status Hukum Dan Sertifikasi Kapal</p>
         </div>
-
-        <div class="login-option">
-            <div id="petugasOption" class="active">Login sebagai Petugas</div>
-            <div id="penggunaOption" class="inactive">Login sebagai Pengguna Jasa</div>
-        </div>
-
+        
         <form class="login-form" id="loginForm">
-            <div class="form-group" id="nipGroup">
+            <div class="form-group">
                 <label for="nip">NIP</label>
                 <div class="input-with-icon">
                     <input type="text" id="nip" name="nip" placeholder="Masukkan NIP Anda" required>
@@ -288,18 +237,7 @@
                 </div>
                 <div class="error-message" id="nipError"></div>
             </div>
-
-            <div class="form-group" id="emailGroup" style="display: none;">
-                <label for="email">Email</label>
-                <div class="input-with-icon">
-                    <input type="email" id="email" name="email" placeholder="Masukkan Email Anda" required>
-                    <div class="input-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                </div>
-                <div class="error-message" id="emailError"></div>
-            </div>
-
+            
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="input-with-icon">
@@ -313,10 +251,6 @@
             
             <button type="submit" class="login-btn">
                 <i class="fas fa-sign-in-alt"></i> Login
-            </button>
-
-            <button type="button" class="register-btn" id="registerButton" style="display: none;">
-                <i class="fas fa-user-plus"></i> Daftar Akun Baru
             </button>
             
             <p class="footer-text">© 2025 SIPERIKSA - Seksi SHSK KSOP Pekanbaru</p>
@@ -342,33 +276,6 @@
                 this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
             });
 
-            // Show/hide fields based on login type
-            const petugasOption = document.getElementById('petugasOption');
-            const penggunaOption = document.getElementById('penggunaOption');
-            const nipGroup = document.getElementById('nipGroup');
-            const emailGroup = document.getElementById('emailGroup');
-            const registerButton = document.getElementById('registerButton');
-
-            petugasOption.addEventListener('click', function() {
-                nipGroup.style.display = 'block';
-                emailGroup.style.display = 'none';
-                registerButton.style.display = 'none';
-                petugasOption.classList.add('active');
-                petugasOption.classList.remove('inactive');
-                penggunaOption.classList.remove('active');
-                penggunaOption.classList.add('inactive');
-            });
-
-            penggunaOption.addEventListener('click', function() {
-                nipGroup.style.display = 'none';
-                emailGroup.style.display = 'block';
-                registerButton.style.display = 'block';
-                penggunaOption.classList.add('active');
-                penggunaOption.classList.remove('inactive');
-                petugasOption.classList.remove('active');
-                petugasOption.classList.add('inactive');
-            });
-
             // Form validation and submission
             const loginForm = document.getElementById('loginForm');
             const popup = document.getElementById('popup');
@@ -379,44 +286,29 @@
                 e.preventDefault();
                 let isValid = true;
                 
-                // Validate based on login type
+                // Validate NIP
                 const nip = document.getElementById('nip');
-                const email = document.getElementById('email');
-                const password = document.getElementById('password');
                 const nipError = document.getElementById('nipError');
-                const emailError = document.getElementById('emailError');
-                const passwordError = document.getElementById('passwordError');
-
-                if (petugasOption.classList.contains('active')) {
-                    // Validate NIP
-                    if (nip.value.trim() === '') {
-                        nipError.textContent = 'NIP harus diisi';
-                        nipError.style.display = 'block';
-                        nip.style.borderColor = 'var(--error)';
-                        isValid = false;
-                    } else if (!/^\d+$/.test(nip.value.trim())) {
-                        nipError.textContent = 'NIP harus berupa angka';
-                        nipError.style.display = 'block';
-                        nip.style.borderColor = 'var(--error)';
-                        isValid = false;
-                    } else {
-                        nipError.style.display = 'none';
-                        nip.style.borderColor = '#ddd';
-                    }
+                
+                if (nip.value.trim() === '') {
+                    nipError.textContent = 'NIP harus diisi';
+                    nipError.style.display = 'block';
+                    nip.style.borderColor = 'var(--error)';
+                    isValid = false;
+                } else if (!/^\d+$/.test(nip.value.trim())) {
+                    nipError.textContent = 'NIP harus berupa angka';
+                    nipError.style.display = 'block';
+                    nip.style.borderColor = 'var(--error)';
+                    isValid = false;
                 } else {
-                    // Validate Email
-                    if (email.value.trim() === '') {
-                        emailError.textContent = 'Email harus diisi';
-                        emailError.style.display = 'block';
-                        email.style.borderColor = 'var(--error)';
-                        isValid = false;
-                    } else {
-                        emailError.style.display = 'none';
-                        email.style.borderColor = '#ddd';
-                    }
+                    nipError.style.display = 'none';
+                    nip.style.borderColor = '#ddd';
                 }
-
+                
                 // Validate password
+                const password = document.getElementById('password');
+                const passwordError = document.getElementById('passwordError');
+                
                 if (password.value.trim() === '') {
                     passwordError.textContent = 'Password harus diisi';
                     passwordError.style.display = 'block';
@@ -439,11 +331,7 @@
                     loginBtn.disabled = true;
 
                     const formData = new FormData();
-                    if (petugasOption.classList.contains('active')) {
-                        formData.append('nip', nip.value.trim());
-                    } else {
-                        formData.append('email', email.value.trim());
-                    }
+                    formData.append('nip', nip.value.trim());
                     formData.append('password', password.value.trim());
 
                     fetch('https://script.google.com/macros/s/AKfycbyGfs8dg5nJs1EhuCzcXhKbTbNEnjqb32AqIUjuZg2ghohtvLsYDm04fOSWXaJHpNiJ6w/exec', {
@@ -483,12 +371,6 @@
                         loginBtn.disabled = false;
                     });
                 }
-            });
-
-            // Daftar Akun Baru Button
-            registerButton.addEventListener('click', function() {
-                // Redirect to registration page
-                window.location.href = 'register.html'; // Ganti dengan URL halaman pendaftaran yang sesuai
             });
         });
 

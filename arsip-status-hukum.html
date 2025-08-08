@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,21 +37,28 @@
 
         /* Sidebar Styles */
         .sidebar {
-            width: 280px; /* Fixed width for sidebar */
+            width: 280px;
+            /* Fixed width for sidebar */
             background-color: var(--navy);
             color: var(--white);
             padding: 20px 0;
-            position: fixed; /* Make sidebar fixed */
-            height: 100vh; /* Full height */
-            overflow-y: auto; /* Allow scrolling if content overflows */
+            position: fixed;
+            /* Make sidebar fixed */
+            height: 100vh;
+            /* Full height */
+            overflow-y: auto;
+            /* Allow scrolling if content overflows */
             z-index: 100;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            transition: left 0.3s ease; /* Smooth transition for sidebar */
-            left: 0; /* Show sidebar by default */
+            transition: left 0.3s ease;
+            /* Smooth transition for sidebar */
+            left: 0;
+            /* Show sidebar by default */
         }
 
         .sidebar.hidden {
-            left: -280px; /* Hide sidebar */
+            left: -280px;
+            /* Hide sidebar */
         }
 
         .sidebar-header {
@@ -70,7 +78,7 @@
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .sidebar-logo img {
             width: 100%;
             height: 100%;
@@ -126,8 +134,10 @@
         }
 
         .submenu {
-            display: none; /* Hide submenu by default */
-            padding-left: 20px; /* Indent submenu items */
+            display: none;
+            /* Hide submenu by default */
+            padding-left: 20px;
+            /* Indent submenu items */
         }
 
         .submenu-item {
@@ -149,12 +159,17 @@
 
         /* Main Content Styles */
         .main-content {
-            flex: 1; /* Take remaining space */
-            padding: 20px; /* Consistent padding */
+            flex: 1;
+            /* Take remaining space */
+            padding: 20px;
+            /* Consistent padding */
             transition: all 0.3s ease;
-            margin-left: 280px; /* Leave space for the sidebar */
-            max-height: 100vh; /* Max height for scrolling */
-            overflow-y: auto; /* Enable vertical scrolling */
+            margin-left: 280px;
+            /* Leave space for the sidebar */
+            max-height: 100vh;
+            /* Max height for scrolling */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
         }
 
         .header {
@@ -168,7 +183,8 @@
 
         .header-title h1 {
             color: var(--navy);
-            font-size: 24px; /* Adjusted header font size */
+            font-size: 24px;
+            /* Adjusted header font size */
         }
 
         .toggle-sidebar {
@@ -204,7 +220,9 @@
             font-weight: bold;
         }
 
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -233,7 +251,7 @@
             transition: background-color 0.2s;
         }
 
-        .toggle-section input[type="checkbox"]:checked + label {
+        .toggle-section input[type="checkbox"]:checked+label {
             background-color: var(--gold);
         }
 
@@ -245,7 +263,7 @@
             border-radius: 5px;
         }
 
-        .toggle-section input[type="checkbox"]:checked ~ .toggle-content {
+        .toggle-section input[type="checkbox"]:checked~.toggle-content {
             display: block;
         }
 
@@ -296,8 +314,10 @@
             }
 
             .main-content {
-                padding: 15px; /* Adjusted padding for mobile */
-                margin-left: 0; /* Remove margin for mobile */
+                padding: 15px;
+                /* Adjusted padding for mobile */
+                margin-left: 0;
+                /* Remove margin for mobile */
             }
 
             .toggle-sidebar {
@@ -306,6 +326,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -373,19 +394,23 @@
                         <div class="toggle-content">
                             <div class="form-group">
                                 <label for="namaKapal">Nama Kapal</label>
-                                <input type="text" id="namaKapal" name="namaKapal" placeholder="Masukkan Nama Kapal" required />
+                                <input type="text" id="namaKapal" name="namaKapal" placeholder="Masukkan Nama Kapal"
+                                    required />
                             </div>
                             <div class="form-group">
                                 <label for="tonaseKotor">Tonase Kotor (GT)</label>
-                                <input type="text" id="tonaseKotor" name="tonaseKotor" placeholder="Masukkan Tonase Kotor" required />
+                                <input type="text" id="tonaseKotor" name="tonaseKotor"
+                                    placeholder="Masukkan Tonase Kotor" required />
                             </div>
                             <div class="form-group">
                                 <label for="tandaPendaftaran">Tanda Pendaftaran</label>
-                                <input type="text" id="tandaPendaftaran" name="tandaPendaftaran" placeholder="Masukkan Tanda Pendaftaran" required />
+                                <input type="text" id="tandaPendaftaran" name="tandaPendaftaran"
+                                    placeholder="Masukkan Tanda Pendaftaran" required />
                             </div>
                             <div class="form-group">
                                 <label for="pemilik">Pemilik</label>
-                                <input type="text" id="pemilik" name="pemilik" placeholder="Masukkan Nama Pemilik" required />
+                                <input type="text" id="pemilik" name="pemilik" placeholder="Masukkan Nama Pemilik"
+                                    required />
                             </div>
                         </div>
                     </div>
@@ -469,48 +494,95 @@
         // Toggle functionality for sections
         const toggleSections = document.querySelectorAll('.toggle-section input[type="checkbox"]');
         toggleSections.forEach(toggle => {
-            toggle.addEventListener('change', function() {
+            toggle.addEventListener('change', function () {
                 const content = this.nextElementSibling.nextElementSibling;
                 content.style.display = this.checked ? 'block' : 'none';
             });
         });
 
-        // Handle form submission
-        document.getElementById('arsipForm').addEventListener('submit', function(e) {
+        // Fungsi untuk baca file dan encode base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Submit form handler
+        document.getElementById('arsipForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            // Retrieve form data
-            const formData = {
-                namaKapal: document.getElementById('namaKapal').value,
-                tonaseKotor: document.getElementById('tonaseKotor').value,
-                tandaPendaftaran: document.getElementById('tandaPendaftaran').value,
-                pemilik: document.getElementById('pemilik').value,
-                penerbitanSTKK: {
-                    tempat: document.getElementById('tempat').value,
-                    tanggal: document.getElementById('tanggal').value,
-                    noUrut: document.getElementById('noUrut').value,
-                    noHal: document.getElementById('noHal').value,
-                    noBuku: document.getElementById('noBuku').value
-                },
-                pengukuhan: {
-                    stkk: document.getElementById('stkk').value,
-                    tanggal: document.getElementById('tanggalPengukuhan').value
+            const url = "https://script.google.com/macros/s/AKfycbx20qEi81rgrTvSFoPsgi57mv188UxFCBalJUsSunnylJV_NDi8uURdpKqGdfwA5qR4-g/exec";
+
+            // Ambil semua input file sesuai id
+            const fileIds = ['permohonan', 'stkkFile', 'grosseAkta', 'suratUkur', 'pnbp'];
+            const filesData = [];
+
+            // Loop baca dan encode file
+            for (let i = 0; i < fileIds.length; i++) {
+                const inputFile = document.getElementById(fileIds[i]);
+                if (inputFile.files.length === 0) {
+                    alert(`File ${fileIds[i]} harus diupload!`);
+                    return;
                 }
+                const file = inputFile.files[0];
+
+                if (file.type !== 'application/pdf') {
+                    alert(`File ${file.name} harus berformat PDF!`);
+                    return;
+                }
+
+                try {
+                    const base64 = await fileToBase64(file);
+                    filesData.push({
+                        name: file.name,
+                        mimeType: file.type,
+                        data: base64.split(',')[1] // hapus bagian data:image/pdf;base64,
+                    });
+                } catch (error) {
+                    alert(`Gagal membaca file ${file.name}`);
+                    return;
+                }
+            }
+
+            // Ambil data teks dari form
+            const formObject = {
+                namaKapal: document.getElementById('namaKapal').value.trim(),
+                tonaseKotor: document.getElementById('tonaseKotor').value.trim(),
+                tandaPendaftaran: document.getElementById('tandaPendaftaran').value.trim(),
+                pemilik: document.getElementById('pemilik').value.trim(),
+                tempat: document.getElementById('tempat').value.trim(),
+                tanggal: document.getElementById('tanggal').value,
+                noUrut: document.getElementById('noUrut').value.trim(),
+                noHal: document.getElementById('noHal').value.trim(),
+                noBuku: document.getElementById('noBuku').value.trim(),
+                stkk: document.getElementById('stkk').value.trim(),
+                tanggalPengukuhan: document.getElementById('tanggalPengukuhan').value,
+                toggleUpload: "STATUS HUKUM",
+                files: filesData
             };
 
-            // Save data to sessionStorage
-            sessionStorage.setItem('statusHukumData', JSON.stringify(formData));
+            // Kirim ke Google Apps Script
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formObject)
+                });
 
-            alert('Data berhasil disimpan!');
-            // Optionally, redirect to data-status-hukum.html
-            window.location.href = 'data-status-hukum.html';
-        });
-
-        // Handle form submission
-        document.getElementById('arsipForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Data berhasil disimpan!');
-            // Here you would typically handle the form submission to the server
+                const json = await res.json();
+                if (json.success) {
+                    alert(json.message || "Data dan file berhasil dikirim!");
+                    window.location.href = 'data-status-hukum.html';
+                } else {
+                    alert(json.message || "Terjadi kesalahan saat mengirim data!");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Gagal mengirim data, coba lagi.");
+            }
         });
 
         // Toggle sidebar on mobile
@@ -546,7 +618,7 @@
         });
 
         // Display user information from session storage
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const userName = sessionStorage.getItem('nama') || 'Nama Petugas';
             const userNIP = sessionStorage.getItem('nip') || '1234567890123456';
             const userJabatan = sessionStorage.getItem('jabatan') || 'Petugas Pemeriksaan';
@@ -554,7 +626,7 @@
             document.getElementById('userName').textContent = userName;
             document.getElementById('userNIP').textContent = userNIP;
             document.getElementById('userJabatan').textContent = userJabatan;
-});
+        });
     </script>
 </body>
 

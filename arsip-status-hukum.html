@@ -500,89 +500,42 @@
             });
         });
 
-        // Fungsi untuk baca file dan encode base64
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // Submit form handler
-        document.getElementById('arsipForm').addEventListener('submit', async function (e) {
+        // Handle form submission
+        document.getElementById('arsipForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const url = "https://script.google.com/macros/s/AKfycbx20qEi81rgrTvSFoPsgi57mv188UxFCBalJUsSunnylJV_NDi8uURdpKqGdfwA5qR4-g/exec";
-
-            // Ambil semua input file sesuai id
-            const fileIds = ['permohonan', 'stkkFile', 'grosseAkta', 'suratUkur', 'pnbp'];
-            const filesData = [];
-
-            // Loop baca dan encode file
-            for (let i = 0; i < fileIds.length; i++) {
-                const inputFile = document.getElementById(fileIds[i]);
-                if (inputFile.files.length === 0) {
-                    alert(`File ${fileIds[i]} harus diupload!`);
-                    return;
+            // Retrieve form data
+            const formData = {
+                namaKapal: document.getElementById('namaKapal').value,
+                tonaseKotor: document.getElementById('tonaseKotor').value,
+                tandaPendaftaran: document.getElementById('tandaPendaftaran').value,
+                pemilik: document.getElementById('pemilik').value,
+                penerbitanSTKK: {
+                    tempat: document.getElementById('tempat').value,
+                    tanggal: document.getElementById('tanggal').value,
+                    noUrut: document.getElementById('noUrut').value,
+                    noHal: document.getElementById('noHal').value,
+                    noBuku: document.getElementById('noBuku').value
+                },
+                pengukuhan: {
+                    stkk: document.getElementById('stkk').value,
+                    tanggal: document.getElementById('tanggalPengukuhan').value
                 }
-                const file = inputFile.files[0];
-
-                if (file.type !== 'application/pdf') {
-                    alert(`File ${file.name} harus berformat PDF!`);
-                    return;
-                }
-
-                try {
-                    const base64 = await fileToBase64(file);
-                    filesData.push({
-                        name: file.name,
-                        mimeType: file.type,
-                        data: base64.split(',')[1] // hapus bagian data:image/pdf;base64,
-                    });
-                } catch (error) {
-                    alert(`Gagal membaca file ${file.name}`);
-                    return;
-                }
-            }
-
-            // Ambil data teks dari form
-            const formObject = {
-                namaKapal: document.getElementById('namaKapal').value.trim(),
-                tonaseKotor: document.getElementById('tonaseKotor').value.trim(),
-                tandaPendaftaran: document.getElementById('tandaPendaftaran').value.trim(),
-                pemilik: document.getElementById('pemilik').value.trim(),
-                tempat: document.getElementById('tempat').value.trim(),
-                tanggal: document.getElementById('tanggal').value,
-                noUrut: document.getElementById('noUrut').value.trim(),
-                noHal: document.getElementById('noHal').value.trim(),
-                noBuku: document.getElementById('noBuku').value.trim(),
-                stkk: document.getElementById('stkk').value.trim(),
-                tanggalPengukuhan: document.getElementById('tanggalPengukuhan').value,
-                toggleUpload: "STATUS HUKUM",
-                files: filesData
             };
 
-            // Kirim ke Google Apps Script
-            try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formObject)
-                });
+            // Save data to sessionStorage
+            sessionStorage.setItem('statusHukumData', JSON.stringify(formData));
 
-                const json = await res.json();
-                if (json.success) {
-                    alert(json.message || "Data dan file berhasil dikirim!");
-                    window.location.href = 'data-status-hukum.html';
-                } else {
-                    alert(json.message || "Terjadi kesalahan saat mengirim data!");
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Gagal mengirim data, coba lagi.");
-            }
+            alert('Data berhasil disimpan!');
+            // Optionally, redirect to data-status-hukum.html
+            window.location.href = 'data-status-hukum.html';
+        });
+
+        // Handle form submission
+        document.getElementById('arsipForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('Data berhasil disimpan!');
+            // Here you would typically handle the form submission to the server
         });
 
         // Toggle sidebar on mobile

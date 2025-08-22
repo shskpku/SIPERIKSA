@@ -287,6 +287,43 @@
     .save-btn:hover {
       background-color: rgba(255, 215, 0, 0.8);
     }
+        /* Spinner */
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      min-width: 250px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s, transform 0.4s;
+      z-index: 9999;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast.success { background-color: #16a34a; } /* hijau */
+    .toast.error { background-color: #dc2626; }   /* merah */
 
     /* Mobile Styles */
     @media (max-width: 768px) {
@@ -477,41 +514,55 @@
               <input type="file" id="pnbp" name="pnbp" accept=".pdf,.doc,.docx" required />
             </div>
           </div>
-
           <button type="submit" class="save-btn">Simpan Data</button>
         </form>
+        <!-- Spinner -->
+        <div id="spinner" class="spinner mt-4"></div>
       </div>
     </div>
   </div>
 
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
 
 
   <script>
-    // Toggle functionality for sections
-    const toggleSections = document.querySelectorAll('.toggle-section input[type="checkbox"]');
-    toggleSections.forEach(toggle => {
-      toggle.addEventListener('change', function () {
-        const content = this.nextElementSibling.nextElementSibling;
-        content.style.display = this.checked ? 'block' : 'none';
-      });
-    });
+    const form = document.getElementById('arsipForm');
+    const spinner = document.getElementById('spinner');
+    const toast = document.getElementById('toast');
 
-    // Handle form submission
-    document.getElementById('arsipForm').addEventListener('submit', function (e) {
+    function showToast(message, type = "success") {
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.className = `toast ${type}`;
+      }, 3000);
+    }
+
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
-      const formData = new FormData(this);
+      const formData = new FormData(form);
 
-      fetch('https://script.google.com/macros/s/AKfycbx20qEi81rgrTvSFoPsgi57mv188UxFCBalJUsSunnylJV_NDi8uURdpKqGdfwA5qR4-g/exec', {
-        method: 'POST',
+      spinner.style.display = "block"; // tampilkan spinner
+
+      fetch("https://script.google.com/macros/s/AKfycbx20qEi81rgrTvSFoPsgi57mv188UxFCBalJUsSunnylJV_NDi8uURdpKqGdfwA5qR4-g/exec", {
+        method: "POST",
         body: formData
       })
         .then(res => res.text())
         .then(txt => {
-          alert(txt);
-          document.getElementById('arsipForm').reset();
+          spinner.style.display = "none"; // sembunyikan spinner
+          if (txt.includes("berhasil")) {
+            showToast("✅ Data & File berhasil disimpan!", "success");
+            form.reset();
+          } else {
+            showToast("⚠️ Terjadi kesalahan: " + txt, "error");
+          }
         })
         .catch(err => {
-          alert('Gagal mengirim data: ' + err.message);
+          spinner.style.display = "none";
+          showToast("❌ Gagal mengirim data: " + err.message, "error");
         });
     });
 
@@ -530,6 +581,7 @@
         sidebar.classList.remove('active');
       }
     });
+
     // Toggle sertifikasi submenu
     const sertifikasiToggle = document.getElementById('sertifikasi-toggle');
     const sertifikasiSubmenu = document.getElementById('sertifikasi-submenu');
@@ -558,66 +610,4 @@
     });
   </script>
 </body>
-
-</html>
-
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Form Arsip Sertifikasi Kapal</title>
-</head>
-
-<body>
-  <h2>Form Arsip Sertifikasi Kapal</h2>
-
-  <form id="arsipForm" enctype="multipart/form-data">
-    <label>Nama Kapal:</label>
-    <input type="text" name="namaKapal" required><br><br>
-
-    <label>Perusahaan:</label>
-    <input type="text" name="perusahaan" required><br><br>
-
-    <label>Ukuran Kapal:</label>
-    <input type="text" name="ukuranKapal" required><br><br>
-
-    <label>Call Sign:</label>
-    <input type="text" name="callSign"><br><br>
-
-    <label>Jenis Sertifikat:</label>
-    <input type="text" name="jenisSertifikat" required><br><br>
-
-    <label>Nomor Sertifikat:</label>
-    <input type="text" name="nomorSertifikat"><br><br>
-
-    <label>Tanggal Terbit:</label>
-    <input type="date" name="tanggalTerbit" required><br><br>
-
-    <label>Tanggal Masa Berlaku:</label>
-    <input type="date" name="tanggalMasaBerlaku"><br><br>
-
-    <label>Bahan Kapal:</label>
-    <input type="text" name="bahanKapal"><br><br>
-
-    <label>Nama Pemeriksa:</label>
-    <input type="text" name="namaPemeriksa"><br><br>
-
-    <label>Keterangan:</label>
-    <textarea name="keterangan"></textarea><br><br>
-
-    <label>Upload Permohonan:</label>
-    <input type="file" name="permohonan" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"><br><br>
-
-    <label>Upload Sertifikat:</label>
-    <input type="file" name="sertifikat" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"><br><br>
-
-    <button type="submit">Simpan Data</button>
-  </form>
-
-  <script>
-
-  </script>
-</body>
-
 </html>
